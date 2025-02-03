@@ -1,0 +1,81 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f6f0f0;
+}
+
+.calculator {
+    
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.screen {
+    text-align: right;
+    font-size: 2rem;
+    padding: 10px;
+  
+    border-radius: 5px;
+    background: #e9e9e9;
+    margin-bottom: 10px;
+}
+
+.btn-group {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+}
+
+.btn-group button {
+    height: 50px;
+    font-size: 1rem;
+}
+
+@media (max-width: 400px) {
+    .calculator {
+        width: 90%;
+    }
+
+    .btn-group {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .btn-group button {
+        height: 45px;
+        font-size: 0.9rem;
+    }
+}
+
+.btn-num {
+    background-color: rgb(240, 240, 240);
+    border: 1px solid white;
+}
+
+
+.dropdown-grid {
+    width: 400px; /* Adjust width as needed */
+    padding: 10px;
+}
+.dropdown-grid .row {
+    margin: 0;
+}
+.dropdown-grid .col {
+    padding: 5px;
+    text-align: center;
+}
+.dropdown-grid a {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: #000;
+    background: #f8f9fa;
+  
+}
+.dropdown-grid a:hover {
+    background: #e9ecef;
+}
