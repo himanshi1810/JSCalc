@@ -72,8 +72,15 @@ body.dark-theme .screen {
     border: 1px solid white;
 }
 
-body.dark-theme .btn-num {
+body.dark-theme .btn-num{
     background-color: #555;
+    color: white;
+}
+body.dark-theme .btn-m{
+    color: white;
+}
+body.dark-theme .fbtn{
+    color: white;
 }
 
 /* Dropdown Grid */
