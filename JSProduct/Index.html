@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Product Management</title>
+  
+</head>
+<body>
+    <div class="container">
+        <h2>Product Management</h2>
+        <form id="productForm">
+            <input type="text" id="ProductName" placeholder="Product Name" required>
+            <input type="file" id="Image" accept="image/*" required><br>
+            <input type="number" id="Price" placeholder="Price" required>
+            <input type="text" id="Description" placeholder="Description" required>
+            <button type="submit"><i class="fa fa-plus"></i> Add Product</button>
+        </form>
+        <input type="text" id="filterInput" placeholder="Filter by Product ID">
+        <select id="sortSelect">
+            <option value="">Sort By</option>
+            <option value="ProductId">Product ID</option>
+            <option value="ProductName">Product Name</option>
+            <option value="Price">Price</option>
+        </select>
+        <ul id="productList"></ul>
+    </div>
+    <script src="Index.js">
+    </script>
+</body>
+</html>
