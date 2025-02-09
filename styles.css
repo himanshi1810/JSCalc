@@ -173,27 +173,58 @@ body.dark-theme .nav-links a {
     cursor: pointer;
 }
 
+/* Existing CSS code remains unchanged */
+
+/* Add responsive styles */
 @media (max-width: 600px) {
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 50px;
-        right: 10px;
-        background: white;
-        padding: 10px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    .calculator {
+        width: 100%; /* Full width on mobile */
+        padding: 10px; /* Adjust padding */
     }
 
-    body.dark-theme .nav-links {
-        background: #333;
+    .screen {
+        font-size: 1.5rem; /* Smaller font size for mobile */
     }
 
-    .menu-icon {
-        display: block;
+    .btn-group {
+        grid-template-columns: repeat(4, 1fr); /* Adjust button layout */
     }
 
-    .nav-links.show {
-        display: flex;
+    .btn-group button {
+        height: 40px; /* Smaller button height */
+        font-size: 0.8rem; /* Smaller font size for buttons */
+    }
+
+    .d-flex {
+        flex-direction: column; /* Stack history and memory vertically */
+        align-items: center; /* Center align */
+    }
+
+    #history, #memory {
+        display: none; /* Hide text for mobile */
+    }
+
+    .icon {
+        display: block; /* Show icons */
+        font-size: 24px; /* Adjust icon size */
+        margin: 10px 0; /* Add margin */
+    }
+
+    .btn-container {
+        display: grid; /* Adjust button container layout */
+        grid-template-columns: repeat(4, 1fr); /* Adjust button layout */
+    }
+}
+
+/* Add styles for icons */
+.icon {
+    font-size: 24px; /* Adjust icon size */
+    cursor: pointer; /* Pointer cursor for icons */
+}
+
+/* Show icons for history and memory */
+@media (max-width: 600px) {
+    #history-icon, #memory-icon {
+        display: block; /* Show icons */
     }
 }

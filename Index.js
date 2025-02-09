@@ -1,8 +1,8 @@
-//Fixme appending value and deletion
-//Make it responsive 
+//+/- not work properly
 
 document.addEventListener("DOMContentLoaded", function () {
   const themeToggleBtn = document.createElement("button");
+  let lastOperationWasEqual = false;
   themeToggleBtn.textContent = "Toggle Theme";
   themeToggleBtn.classList.add("theme-toggle");
   document.body.appendChild(themeToggleBtn);
@@ -54,7 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Load saved theme from localStorage
   if (localStorage.getItem("theme") === "dark") {
+    themeToggleBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i>`;
     document.body.classList.add("dark-theme");
+  } else {
+    themeToggleBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i>`;
   }
 
   themeToggleBtn.addEventListener("click", function () {
@@ -352,10 +355,20 @@ document.addEventListener("DOMContentLoaded", function () {
           addToHistory(`${currentInput} = ${result}`);
           currentInput = result.toString();
           updateScreen(currentInput);
+          lastOperationWasEqual = true; // Set a flag to track "=" was pressed
         } catch (error) {
           updateScreen("Error");
+          lastOperationWasEqual = false;
         }
-      } else if (value === "M+") {
+      }
+      // If a number (0-9) is pressed after "=", clear the screen before appending
+      else if (!isNaN(value) && lastOperationWasEqual) {
+        currentInput = value; // Clear and start fresh with the new number
+        lastOperationWasEqual = false; // Reset the flag
+        updateScreen(currentInput);
+      }
+      // If a number (0-9) is pressed after "=", clear the screen before appending
+      else if (value === "M+") {
         memoryAdd();
       } else if (value === "M-") {
         memorySubtract();
@@ -404,7 +417,7 @@ document.addEventListener("DOMContentLoaded", function () {
           num = Math.pow(num, 2);
         }
 
-        currentInput=num.toString()
+        currentInput = num.toString();
         updateScreen(currentInput);
 
         console.log("Updated Current Input:", currentInput);
@@ -420,7 +433,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           num = Math.sqrt(num);
         }
-        currentInput=num.toString()
+        currentInput = num.toString();
         updateScreen(currentInput);
         //FixMe
       } else if (value === "x^y" || value === "y√x") {
@@ -531,9 +544,9 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (value === "÷") {
         currentInput += "/";
         updateScreen(currentInput);
-      }else if (value === "|x|") {
+      } else if (value === "|x|") {
         currentInput = Math.abs(parseFloat(currentInput)).toString();
-        updateScreen(currentInput)
+        updateScreen(currentInput);
       } else if (value === "1/x") {
         try {
           console.log(currentInput);
@@ -561,13 +574,42 @@ document.addEventListener("DOMContentLoaded", function () {
         updateScreen(currentInput);
       } else if (value === "+/-") {
         if (currentInput.length > 0) {
-          if (currentInput.startsWith("-")) {
-            currentInput = currentInput.substring(1); // Remove '-' to make it positive
-          } else {
-            currentInput = "-" + currentInput; // Add '-' to make it negative
+          if (currentInput === "0") return;
+
+          currentInput = currentInput.startsWith("-")
+            ? currentInput.substring(1)
+            : "-" + currentInput;
+          updateScreen(currentInput);
+        } else if (expression.length > 0) {
+          let numberIndex = -1;
+          let numberToNegate = null;
+          //Find all numbers with indexes
+          let numberRegex = new RegExp(/[-+]?\d+(\.\d+)?/g);
+          let matches = [];
+          let match;
+          while ((match = numberRegex.exec(expression)) !== null) {
+            matches.push({
+              value: match[0],
+              index: match.index,
+            });
+          }
+          if (matches.length > 0) {
+            numberToNegate = matches[matches.length - 1];
+            numberIndex = numberToNegate.index;
+          }
+
+          if (numberToNegate) {
+            let newNumber = numberToNegate.value.startsWith("-")
+              ? numberToNegate.value.substring(1)
+              : "-" + numberToNegate.value;
+
+            expression =
+              expression.substring(0, numberIndex) +
+              newNumber +
+              expression.substring(numberIndex + numberToNegate.value.length);
+            updateScreen(expression);
           }
         }
-        updateScreen(currentInput);
       } else if (value === "exp") {
         currentInput += "**";
         updateScreen(currentInput);
