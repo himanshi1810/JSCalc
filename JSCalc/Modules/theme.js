@@ -1,34 +1,35 @@
+
 export function createThemeToggleButton() {
-    const themeToggleBtn = document.createElement("button");
-    themeToggleBtn.textContent = "Toggle Theme";
-    themeToggleBtn.classList.add("theme-toggle");
-  
-    // Load saved theme from localStorage
-    if (localStorage.getItem("theme") === "dark") {
-      themeToggleBtn.innerHTML = '<i class="fa-solid fa-circle-half-stroke"></i>';
-      document.body.classList.add("dark-theme");
-    } else {
-      themeToggleBtn.innerHTML = '<i class="fa-solid fa-circle-half-stroke"></i>';
-    }
-  
-    themeToggleBtn.addEventListener("click", function () {
-      document.body.classList.toggle("dark-theme");
-  
-      // Save theme preference in localStorage
-      if (document.body.classList.contains("dark-theme")) {
-        localStorage.setItem("theme", "dark");
-      } else {
-        localStorage.setItem("theme", "light");
-      }
+  const themeToggleBtn = document.createElement("button");
+  themeToggleBtn.classList.add("theme-toggle");
+
+  // Set initial theme state
+  setInitialTheme(themeToggleBtn);
+
+  // Add event listener for theme toggling
+  themeToggleBtn.addEventListener("click", toggleTheme);
+
+  return themeToggleBtn;
+}
+
+function setInitialTheme(button) {
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-theme");
+  }
+  button.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i>`;
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark-theme");
+  localStorage.setItem("theme", document.body.classList.contains("dark-theme") ? "dark" : "light");
+}
+export function setupMenuToggle() {
+  const menuIcon = document.querySelector(".menu-icon");
+  const navLinks = document.querySelector(".nav-links");
+
+  if (menuIcon && navLinks) {
+    menuIcon.addEventListener("click", function () {
+      navLinks.classList.toggle("show");
     });
-  
-    return themeToggleBtn;
   }
-  
-  export function setupMenuToggle(menuIcon, navLinks) {
-    if (menuIcon) {
-      menuIcon.addEventListener("click", function () {
-        navLinks.classList.toggle("show");
-      });
-    }
-  }
+}

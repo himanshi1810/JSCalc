@@ -1,10 +1,5 @@
+import { createThemeToggleButton, setupMenuToggle } from "./Modules/theme.js";
 document.addEventListener("DOMContentLoaded", function () {
-  const themeToggleBtn = document.createElement("button");
-  themeToggleBtn.textContent = "Toggle Theme";
-  themeToggleBtn.classList.add("theme-toggle");
-  const menuIcon = document.querySelector(".menu-icon");
-  const navLinks = document.querySelector(".nav-links");
-  document.body.appendChild(themeToggleBtn);
   let lastOperationWasEqual = false;
   let firstNumber = null;
   let operator = null;
@@ -19,6 +14,12 @@ document.addEventListener("DOMContentLoaded", function () {
   let isHyperbolic = false;
   let isSecondFunction = false;
   let isExponentialMode = false;
+
+
+   // Theme
+  const themeToggleBtn = createThemeToggleButton();
+  document.body.appendChild(themeToggleBtn);
+  setupMenuToggle();
 
   //Degree Button
   document.getElementById("btn-deg").addEventListener("click", function () {
@@ -63,29 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-// Theme
-  if (localStorage.getItem("theme") === "dark") {
-    themeToggleBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i>`;
-    document.body.classList.add("dark-theme");
-  } else {
-    themeToggleBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i>`;
-  }
-  // Theme Toggle
-  themeToggleBtn.addEventListener("click", function () {
-    document.body.classList.toggle("dark-theme");
-
-    // Save theme preference in localStorage
-    if (document.body.classList.contains("dark-theme")) {
-      localStorage.setItem("theme", "dark");
-    } else {
-      localStorage.setItem("theme", "light");
-    }
-  });
-  if (menuIcon) {
-    menuIcon.addEventListener("click", function () {
-      navLinks.classList.toggle("show");
-    });
-  }
+ 
   // Update the screen display
   function updateScreen(value) {
     console.log("Updating Screen:", value);
@@ -173,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (value.includes("cot")) {
         currentInput = applyTrigFunction("cot", inputValue);
       }
-      lastOperationWasEqual = true; 
+      lastOperationWasEqual = true;
 
       updateScreen(currentInput);
     });
@@ -186,43 +165,43 @@ document.addEventListener("DOMContentLoaded", function () {
           ? "sinh⁻¹"
           : "sinh"
         : isInverse
-          ? "sin⁻¹"
-          : "sin",
+        ? "sin⁻¹"
+        : "sin",
       "trig-cos": isHyperbolic
         ? isInverse
           ? "cosh⁻¹"
           : "cosh"
         : isInverse
-          ? "cos⁻¹"
-          : "cos",
+        ? "cos⁻¹"
+        : "cos",
       "trig-tan": isHyperbolic
         ? isInverse
           ? "tanh⁻¹"
           : "tanh"
         : isInverse
-          ? "tan⁻¹"
-          : "tan",
+        ? "tan⁻¹"
+        : "tan",
       "trig-sec": isHyperbolic
         ? isInverse
           ? "sech⁻¹"
           : "sech"
         : isInverse
-          ? "sec⁻¹"
-          : "sec",
+        ? "sec⁻¹"
+        : "sec",
       "trig-csc": isHyperbolic
         ? isInverse
           ? "csch⁻¹"
           : "csch"
         : isInverse
-          ? "csc⁻¹"
-          : "csc",
+        ? "csc⁻¹"
+        : "csc",
       "trig-cot": isHyperbolic
         ? isInverse
           ? "coth⁻¹"
           : "coth"
         : isInverse
-          ? "cot⁻¹"
-          : "cot",
+        ? "cot⁻¹"
+        : "cot",
     };
 
     Object.entries(mappings).forEach(([id, label]) => {
@@ -237,46 +216,58 @@ document.addEventListener("DOMContentLoaded", function () {
     switch (func) {
       case "sin":
         return isInverse
-          ? (isDegreeMode ? Math.asin(value) * (180 / Math.PI) : Math.asin(value))
+          ? isDegreeMode
+            ? Math.asin(value) * (180 / Math.PI)
+            : Math.asin(value)
           : isHyperbolic
-            ? Math.sinh(value)
-            : Math.sin(angle);
+          ? Math.sinh(value)
+          : Math.sin(angle);
       case "cos":
         return isInverse
-          ? (isDegreeMode ? Math.acos(value) * (180 / Math.PI) : Math.acos(value))
+          ? isDegreeMode
+            ? Math.acos(value) * (180 / Math.PI)
+            : Math.acos(value)
           : isHyperbolic
-            ? Math.cosh(value)
-            : Math.cos(angle);
+          ? Math.cosh(value)
+          : Math.cos(angle);
       case "tan":
         return isInverse
-          ? (isDegreeMode ? Math.atan(value) * (180 / Math.PI) : Math.atan(value))
+          ? isDegreeMode
+            ? Math.atan(value) * (180 / Math.PI)
+            : Math.atan(value)
           : isHyperbolic
-            ? Math.tanh(value)
-            : Math.tan(angle);
+          ? Math.tanh(value)
+          : Math.tan(angle);
       case "sec":
         return isInverse
-          ? (isDegreeMode ? Math.acos(1 / value) * (180 / Math.PI) : Math.acos(1 / value))
+          ? isDegreeMode
+            ? Math.acos(1 / value) * (180 / Math.PI)
+            : Math.acos(1 / value)
           : isHyperbolic
-            ? 1 / Math.cosh(value)
-            : 1 / Math.cos(isDegreeMode ? value * (Math.PI / 180) : value);
+          ? 1 / Math.cosh(value)
+          : 1 / Math.cos(isDegreeMode ? value * (Math.PI / 180) : value);
       case "csc":
         return isInverse
-          ? (isDegreeMode ? Math.asin(1 / value) * (180 / Math.PI) : Math.asin(1 / value))
+          ? isDegreeMode
+            ? Math.asin(1 / value) * (180 / Math.PI)
+            : Math.asin(1 / value)
           : isHyperbolic
-            ? 1 / Math.sinh(value)
-            : 1 / Math.sin(isDegreeMode ? value * (Math.PI / 180) : value);
+          ? 1 / Math.sinh(value)
+          : 1 / Math.sin(isDegreeMode ? value * (Math.PI / 180) : value);
       case "cot":
         return isInverse
-          ? (isDegreeMode ? Math.atan(1 / value) * (180 / Math.PI) : Math.atan(1 / value))
+          ? isDegreeMode
+            ? Math.atan(1 / value) * (180 / Math.PI)
+            : Math.atan(1 / value)
           : isHyperbolic
-            ? 1 / Math.tanh(value)
-            : 1 / Math.tan(isDegreeMode ? value * (Math.PI / 180) : value);
+          ? 1 / Math.tanh(value)
+          : 1 / Math.tan(isDegreeMode ? value * (Math.PI / 180) : value);
       default:
         return value;
     }
   }
 
-  //All functions are here like x, |x|  
+  //All functions are here like x, |x|
   document.querySelectorAll(".dropdown-item").forEach((item) => {
     item.addEventListener("click", function () {
       let value = this.innerText;
@@ -284,11 +275,10 @@ document.addEventListener("DOMContentLoaded", function () {
         currentInput = Math.abs(parseFloat(currentInput)).toString();
       } else if (value === "⌊x⌋") {
         currentInput = Math.floor(parseFloat(currentInput)).toString();
-      }
-      else if (value === "⌈x⌉") {
+      } else if (value === "⌈x⌉") {
         currentInput = Math.ceil(parseFloat(currentInput)).toString();
       }
-      lastOperationWasEqual = true; 
+      lastOperationWasEqual = true;
       updateScreen(currentInput);
     });
   });
@@ -345,7 +335,11 @@ document.addEventListener("DOMContentLoaded", function () {
             result = Math.pow(firstNumber, 1 / secondNumber);
             historyEntry = `${secondNumber}√${firstNumber} = ${result}`;
           } else if (operator === "logᵧx") {
-            if (currentInput === "" || isNaN(currentInput) || firstNumber <= 0) {
+            if (
+              currentInput === "" ||
+              isNaN(currentInput) ||
+              firstNumber <= 0
+            ) {
               updateScreen("Error");
               return;
             }
@@ -358,7 +352,7 @@ document.addEventListener("DOMContentLoaded", function () {
             historyEntry = `log_${base}(${firstNumber}) = ${result}`;
           } else {
             result = eval(currentInput);
-            result = parseFloat(result.toFixed(10))
+            result = parseFloat(result.toFixed(10));
             historyEntry = `${currentInput} = ${result}`;
           }
           addToHistory(historyEntry);
@@ -380,7 +374,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         updateScreen(currentInput);
       } else if (["+", "-", "*", "/"].includes(value)) {
-
         if (lastOperationWasEqual) {
           currentInput = firstNumber + value;
           lastOperationWasEqual = false;
@@ -419,28 +412,24 @@ document.addEventListener("DOMContentLoaded", function () {
           // Lanczos approximation for Gamma function
           const g = 7;
           const C = [
-            0.99999999999980993,
-            676.5203681218851,
-            -1259.1392167224028,
-            771.32342877765313,
-            -176.61502916214059,
-            12.507343278686905,
-            -0.13857109526572012,
-            9.9843695780195716e-6,
-            1.5056327351493116e-7,
+            0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+            771.32342877765313, -176.61502916214059, 12.507343278686905,
+            -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7,
           ];
           if (z < 0.5) return Math.PI / (Math.sin(Math.PI * z) * gamma(1 - z));
           z -= 1;
           let x = C[0];
           for (let i = 1; i < g + 2; i++) x += C[i] / (z + i);
           let t = z + g + 0.5;
-          return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+          return (
+            Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x
+          );
         };
 
         let result = factorial(num);
         currentInput = result.toString();
         updateScreen(currentInput);
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
       } else if (value === "2nd") {
         isSecondFunction = !isSecondFunction;
         if (isSecondFunction) {
@@ -473,7 +462,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         currentInput = num.toString();
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         updateScreen(currentInput);
 
         console.log("Updated Current Input:", currentInput);
@@ -486,11 +475,9 @@ document.addEventListener("DOMContentLoaded", function () {
         firstNumber = parseFloat(currentInput);
         currentInput = "";
         operator = value;
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         updateScreen(firstNumber + (value === "x^y" ? "^" : "√"));
-
-      }
-      else if (value === "10^x" || value === "2^x") {
+      } else if (value === "10^x" || value === "2^x") {
         if (currentInput === "" || isNaN(currentInput)) {
           updateScreen("Error");
           return;
@@ -504,7 +491,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           currentInput = Math.pow(10, num);
         }
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         updateScreen(currentInput);
       } else if (value === "log" || value === "logᵧx") {
         if (!isSecondFunction) {
@@ -524,7 +511,7 @@ document.addEventListener("DOMContentLoaded", function () {
           operator = "logᵧx";
           updateScreen(`logᵧ(${firstNumber})`);
         }
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         updateScreen(currentInput);
       } else if (value === "ln" || value === "e^x") {
         if (currentInput === "" || isNaN(currentInput)) {
@@ -537,26 +524,26 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           currentInput = Math.log(num).toString();
         }
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         updateScreen(currentInput);
       } else if (value === "π") {
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         currentInput += Math.PI.toString();
         updateScreen(currentInput);
       } else if (value === "e") {
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         currentInput += Math.E.toString();
         updateScreen(currentInput);
       } else if (value === "mod") {
         currentInput += "%";
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         updateScreen(currentInput);
       } else if (value === "÷") {
         currentInput += "/";
         updateScreen(currentInput);
       } else if (value === "|x|") {
         currentInput = Math.abs(parseFloat(currentInput)).toString();
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         updateScreen(currentInput);
       } else if (value === "1/x") {
         try {
@@ -575,7 +562,7 @@ document.addEventListener("DOMContentLoaded", function () {
           } else {
             currentInput = 1 / num;
             console.log(currentInput);
-            lastOperationWasEqual = true; 
+            lastOperationWasEqual = true;
             updateScreen(currentInput);
           }
         } catch (error) {
@@ -627,10 +614,9 @@ document.addEventListener("DOMContentLoaded", function () {
             let lastBracketContent = lastBracketMatch[0];
             let startIndex = expression.lastIndexOf(lastBracketContent);
 
-            let negatedExpression =
-              lastBracketContent.startsWith("-")
-                ? lastBracketContent.substring(1)
-                : "-" + lastBracketContent;
+            let negatedExpression = lastBracketContent.startsWith("-")
+              ? lastBracketContent.substring(1)
+              : "-" + lastBracketContent;
 
             expression =
               expression.substring(0, startIndex) +
@@ -642,11 +628,11 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (value === "exp") {
         if (currentInput === "" || isNaN(currentInput)) {
           updateScreen("Error");
-          lastOperationWasEqual = true; 
+          lastOperationWasEqual = true;
           return;
         } else if (value === "0") {
           let num = parseFloat(currentInput);
-          currentInput = Number(num).toExponential().toString
+          currentInput = Number(num).toExponential().toString;
         }
         let num = parseFloat(currentInput);
         currentInput = Number(num).toExponential().toString();
@@ -672,10 +658,9 @@ document.addEventListener("DOMContentLoaded", function () {
         updateScreen(currentInput);
       } else {
         currentInput += value;
-        lastOperationWasEqual = true; 
+        lastOperationWasEqual = true;
         updateScreen(currentInput);
       }
     });
   });
-
 });
