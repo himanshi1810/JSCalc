@@ -1,23 +1,34 @@
-//FIXME: +/- not work properly
-//FIXME: Deg - Rad 
-
 document.addEventListener("DOMContentLoaded", function () {
   const themeToggleBtn = document.createElement("button");
   let lastOperationWasEqual = false;
   themeToggleBtn.textContent = "Toggle Theme";
   themeToggleBtn.classList.add("theme-toggle");
   document.body.appendChild(themeToggleBtn);
-  let lastResult = "";
-  let isNewCalculation = false;
-  let isDegree = true;
   let firstNumber = null;
   let operator = null;
+  let isDegreeMode = true;
+  const screen = document.getElementById("screen");
+  const historyDisplay = document.getElementById("history");
+  const memoryDisplay = document.getElementById("memory");
+  let currentInput = "";
+  let history = [];
+  let memory = 0;
+  const menuIcon = document.querySelector(".menu-icon");
+  const navLinks = document.querySelector(".nav-links");
+  let isInverse = false;
+  let isHyperbolic = false;
+  let isSecondFunction = false;
+  let isExponentialMode = false;
 
+  //Degree Button
+  document.getElementById("btn-deg").addEventListener("click", function () {
+    isDegreeMode = !isDegreeMode;
+    this.innerText = isDegreeMode ? "Deg" : "Rad";
+  });
 
   //Key Event Handle
   document.addEventListener("keydown", function (event) {
     const key = event.key;
-
     if (
       (key >= "0" && key <= "9") ||
       key === "." ||
@@ -29,13 +40,11 @@ document.addEventListener("DOMContentLoaded", function () {
       currentInput += key;
       updateScreen(currentInput);
     }
-
     // Handle Backspace to delete last character
     if (key === "Backspace") {
       currentInput = currentInput.slice(0, -1);
       updateScreen(currentInput);
     }
-
     // Handle Enter to evaluate expression
     if (key === "Enter") {
       try {
@@ -47,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
         updateScreen(currentInput);
       }
     }
-
     // Handle Escape to clear input
     if (key === "Escape") {
       currentInput = "";
@@ -62,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     themeToggleBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i>`;
   }
-
+  // Theme Toggle
   themeToggleBtn.addEventListener("click", function () {
     document.body.classList.toggle("dark-theme");
 
@@ -73,40 +81,21 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("theme", "light");
     }
   });
-
-  // Navbar Toggle
-  const menuIcon = document.querySelector(".menu-icon");
-  const navLinks = document.querySelector(".nav-links");
-
   if (menuIcon) {
     menuIcon.addEventListener("click", function () {
       navLinks.classList.toggle("show");
     });
   }
-
-  let currentInput = "";
-  let history = [];
-  let memory = 0;
-
-  const screen = document.getElementById("screen");
-  const historyDisplay = document.getElementById("history");
-  const memoryDisplay = document.getElementById("memory");
-
   // Update the screen display
   function updateScreen(value) {
     console.log("Updating Screen:", value);
     screen.textContent = value || "0";
   }
-
-  document.getElementById("btn-deg").addEventListener("click", function () {
-    this.innerText = this.innerText === "Deg" ? "Rad" : "Deg";
-  });
-
+  // Add History
   function addToHistory(entry) {
     history.push(entry);
     updateHistoryDisplay();
   }
-
   // Update history display
   function updateHistoryDisplay() {
     historyDisplay.innerHTML = "";
@@ -153,17 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateMemoryDisplay() {
     memoryDisplay.textContent = `Memory: ${memory}`;
   }
-
-  document.getElementById("btn-delete").addEventListener("click", function () {
-    if (screen.innerText.length > 0) {
-      screen.innerText = screen.innerText.slice(0, -1);
-    }
-  });
-
   // All trigonometries functions are here
-  let isInverse = false;
-  let isHyperbolic = false;
-
   document.querySelectorAll(".dropdown-item").forEach((item) => {
     item.addEventListener("click", function () {
       let value = this.innerText.trim();
@@ -183,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Handling trigonometric function clicks
       if (value.includes("sin")) {
         currentInput = applyTrigFunction("sin", inputValue);
-      } else if (value.includes("cos")) {
+      } else if (value.includes("sin")) {
         currentInput = applyTrigFunction("cos", inputValue);
       } else if (value.includes("tan")) {
         currentInput = applyTrigFunction("tan", inputValue);
@@ -194,6 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (value.includes("cot")) {
         currentInput = applyTrigFunction("cot", inputValue);
       }
+      lastOperationWasEqual = true; 
 
       updateScreen(currentInput);
     });
@@ -250,54 +230,53 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  //Trigo Functions
   function applyTrigFunction(func, value) {
-    let radianValue = value * (Math.PI / 180); // Convert degrees to radians
+    let angle = isDegreeMode ? value * (Math.PI / 180) : value;
 
     switch (func) {
       case "sin":
         return isInverse
-          ? Math.asin(value) * (180 / Math.PI)
+          ? (isDegreeMode ? Math.asin(value) * (180 / Math.PI) : Math.asin(value))
           : isHyperbolic
             ? Math.sinh(value)
-            : Math.sin(radianValue);
+            : Math.sin(angle);
       case "cos":
         return isInverse
-          ? Math.acos(value) * (180 / Math.PI)
+          ? (isDegreeMode ? Math.acos(value) * (180 / Math.PI) : Math.acos(value))
           : isHyperbolic
             ? Math.cosh(value)
-            : Math.cos(radianValue);
+            : Math.cos(angle);
       case "tan":
         return isInverse
-          ? Math.atan(value) * (180 / Math.PI)
+          ? (isDegreeMode ? Math.atan(value) * (180 / Math.PI) : Math.atan(value))
           : isHyperbolic
             ? Math.tanh(value)
-            : Math.tan(radianValue);
+            : Math.tan(angle);
       case "sec":
         return isInverse
-          ? (1 / Math.acos(value)) * (180 / Math.PI)
+          ? (isDegreeMode ? Math.acos(1 / value) * (180 / Math.PI) : Math.acos(1 / value))
           : isHyperbolic
             ? 1 / Math.cosh(value)
-            : 1 / Math.cos(radianValue);
+            : 1 / Math.cos(isDegreeMode ? value * (Math.PI / 180) : value);
       case "csc":
         return isInverse
-          ? (1 / Math.asin(value)) * (180 / Math.PI)
+          ? (isDegreeMode ? Math.asin(1 / value) * (180 / Math.PI) : Math.asin(1 / value))
           : isHyperbolic
             ? 1 / Math.sinh(value)
-            : 1 / Math.sin(radianValue);
+            : 1 / Math.sin(isDegreeMode ? value * (Math.PI / 180) : value);
       case "cot":
         return isInverse
-          ? (1 / Math.atan(value)) * (180 / Math.PI)
+          ? (isDegreeMode ? Math.atan(1 / value) * (180 / Math.PI) : Math.atan(1 / value))
           : isHyperbolic
             ? 1 / Math.tanh(value)
-            : 1 / Math.tan(radianValue);
+            : 1 / Math.tan(isDegreeMode ? value * (Math.PI / 180) : value);
       default:
         return value;
     }
   }
 
-  //All functions are here
-  let isSecondFunction = false;
-
+  //All functions are here like x, |x|  
   document.querySelectorAll(".dropdown-item").forEach((item) => {
     item.addEventListener("click", function () {
       let value = this.innerText;
@@ -309,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function () {
       else if (value === "⌈x⌉") {
         currentInput = Math.ceil(parseFloat(currentInput)).toString();
       }
-
+      lastOperationWasEqual = true; 
       updateScreen(currentInput);
     });
   });
@@ -329,8 +308,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       if (value === "Deg" || value === "Rad") {
         updateScreen("0");
-      } else if (value === "0") {
-        updateScreen("0")
       } else if (value === ".") {
         // Prevent multiple decimals in the same number
         let lastNumber = currentInput.split(/[\+\-\*\/]/).pop();
@@ -347,7 +324,7 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (value === "=") {
         try {
           let result;
-          let historyEntry = ""; // Initialize empty history entry
+          let historyEntry = "";
 
           if (operator === "x^y") {
             if (currentInput === "" || isNaN(currentInput)) {
@@ -374,29 +351,27 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             let base = parseFloat(currentInput);
             if (base <= 0 || base === 1) {
-              updateScreen("Error"); 
+              updateScreen("Error");
               return;
             }
             result = Math.log(firstNumber) / Math.log(base);
             historyEntry = `log_${base}(${firstNumber}) = ${result}`;
           } else {
             result = eval(currentInput);
+            result = parseFloat(result.toFixed(10))
             historyEntry = `${currentInput} = ${result}`;
           }
-
           addToHistory(historyEntry);
           currentInput = result.toString();
           updateScreen(currentInput);
           lastOperationWasEqual = true;
-
-          // Reset stored operator & first number
+          firstNumber = result;
           operator = null;
-          firstNumber = null;
         } catch (error) {
           updateScreen("Error");
           lastOperationWasEqual = false;
         }
-      } else if (!isNaN(value)) {
+      } else if (!isNaN(value) || value === ".") {
         if (lastOperationWasEqual) {
           currentInput = value;
           lastOperationWasEqual = false;
@@ -404,8 +379,16 @@ document.addEventListener("DOMContentLoaded", function () {
           currentInput += value;
         }
         updateScreen(currentInput);
-      }
-      else if (value === "M+") {
+      } else if (["+", "-", "*", "/"].includes(value)) {
+
+        if (lastOperationWasEqual) {
+          currentInput = firstNumber + value;
+          lastOperationWasEqual = false;
+        } else {
+          currentInput += value;
+        }
+        updateScreen(currentInput);
+      } else if (value === "M+") {
         memoryAdd();
       } else if (value === "M-") {
         memorySubtract();
@@ -416,13 +399,48 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (value === "MS") {
         memoryStore();
       } else if (value === "n!") {
-        let num = parseInt(currentInput);
-        let fact = 1;
-        for (let i = 1; i <= num; i++) {
-          fact *= i;
+        if (currentInput === "" || isNaN(currentInput)) {
+          updateScreen("Error"); // Invalid input
+          return;
         }
-        currentInput = fact.toString();
+
+        let num = parseFloat(currentInput); // Convert input to a number
+        if (num < 0) {
+          updateScreen("Error"); // Factorial is not defined for negative numbers
+          return;
+        }
+
+        // Compute factorial: Standard factorial for integers, Gamma function for floats
+        let factorial = (n) => (n % 1 === 0 ? intFactorial(n) : gamma(n + 1));
+
+        let intFactorial = (n) => (n <= 1 ? 1 : n * intFactorial(n - 1)); // Standard factorial
+
+        let gamma = (z) => {
+          // Lanczos approximation for Gamma function
+          const g = 7;
+          const C = [
+            0.99999999999980993,
+            676.5203681218851,
+            -1259.1392167224028,
+            771.32342877765313,
+            -176.61502916214059,
+            12.507343278686905,
+            -0.13857109526572012,
+            9.9843695780195716e-6,
+            1.5056327351493116e-7,
+          ];
+          if (z < 0.5) return Math.PI / (Math.sin(Math.PI * z) * gamma(1 - z));
+          z -= 1;
+          let x = C[0];
+          for (let i = 1; i < g + 2; i++) x += C[i] / (z + i);
+          let t = z + g + 0.5;
+          return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+        };
+
+        let result = factorial(num);
+        currentInput = result.toString();
         updateScreen(currentInput);
+        lastOperationWasEqual = true; 
       } else if (value === "2nd") {
         isSecondFunction = !isSecondFunction;
         if (isSecondFunction) {
@@ -455,6 +473,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         currentInput = num.toString();
+        lastOperationWasEqual = true; 
         updateScreen(currentInput);
 
         console.log("Updated Current Input:", currentInput);
@@ -467,6 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
         firstNumber = parseFloat(currentInput);
         currentInput = "";
         operator = value;
+        lastOperationWasEqual = true; 
         updateScreen(firstNumber + (value === "x^y" ? "^" : "√"));
 
       }
@@ -484,7 +504,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           currentInput = Math.pow(10, num);
         }
-
+        lastOperationWasEqual = true; 
         updateScreen(currentInput);
       } else if (value === "log" || value === "logᵧx") {
         if (!isSecondFunction) {
@@ -497,13 +517,14 @@ document.addEventListener("DOMContentLoaded", function () {
             updateScreen("Error");
             return;
           }
-          currentInput = Math.log10(num).toString(); // Log base 10
+          currentInput = Math.log10(num).toString();
         } else {
           firstNumber = parseFloat(currentInput);
           currentInput = "";
           operator = "logᵧx";
           updateScreen(`logᵧ(${firstNumber})`);
         }
+        lastOperationWasEqual = true; 
         updateScreen(currentInput);
       } else if (value === "ln" || value === "e^x") {
         if (currentInput === "" || isNaN(currentInput)) {
@@ -512,25 +533,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         let num = parseFloat(currentInput);
         if (value === "e^x") {
-          currentInput = Math.exp(num); // e^x if second function active
+          currentInput = Math.exp(num);
         } else {
-          currentInput = Math.log(num).toString(); // ln otherwise
+          currentInput = Math.log(num).toString();
         }
+        lastOperationWasEqual = true; 
         updateScreen(currentInput);
       } else if (value === "π") {
+        lastOperationWasEqual = true; 
         currentInput += Math.PI.toString();
         updateScreen(currentInput);
       } else if (value === "e") {
+        lastOperationWasEqual = true; 
         currentInput += Math.E.toString();
         updateScreen(currentInput);
       } else if (value === "mod") {
         currentInput += "%";
+        lastOperationWasEqual = true; 
         updateScreen(currentInput);
       } else if (value === "÷") {
         currentInput += "/";
         updateScreen(currentInput);
       } else if (value === "|x|") {
         currentInput = Math.abs(parseFloat(currentInput)).toString();
+        lastOperationWasEqual = true; 
         updateScreen(currentInput);
       } else if (value === "1/x") {
         try {
@@ -549,6 +575,7 @@ document.addEventListener("DOMContentLoaded", function () {
           } else {
             currentInput = 1 / num;
             console.log(currentInput);
+            lastOperationWasEqual = true; 
             updateScreen(currentInput);
           }
         } catch (error) {
@@ -568,8 +595,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (expression.length > 0) {
           let numberIndex = -1;
           let numberToNegate = null;
-          //Find all numbers with indexes
-          let numberRegex = new RegExp(/[-+]?\d+(\.\d+)?/g);
+          let numberRegex = /[-+]?\d+(\.\d+)?/g;
           let matches = [];
           let match;
           while ((match = numberRegex.exec(expression)) !== null) {
@@ -578,6 +604,7 @@ document.addEventListener("DOMContentLoaded", function () {
               index: match.index,
             });
           }
+
           if (matches.length > 0) {
             numberToNegate = matches[matches.length - 1];
             numberIndex = numberToNegate.index;
@@ -594,9 +621,35 @@ document.addEventListener("DOMContentLoaded", function () {
               expression.substring(numberIndex + numberToNegate.value.length);
             updateScreen(expression);
           }
+
+          let lastBracketMatch = expression.match(/\([^\(\)]+?\)$/);
+          if (lastBracketMatch) {
+            let lastBracketContent = lastBracketMatch[0];
+            let startIndex = expression.lastIndexOf(lastBracketContent);
+
+            let negatedExpression =
+              lastBracketContent.startsWith("-")
+                ? lastBracketContent.substring(1)
+                : "-" + lastBracketContent;
+
+            expression =
+              expression.substring(0, startIndex) +
+              negatedExpression +
+              expression.substring(startIndex + lastBracketContent.length);
+            updateScreen(expression);
+          }
         }
       } else if (value === "exp") {
-        currentInput += "**";
+        if (currentInput === "" || isNaN(currentInput)) {
+          updateScreen("Error");
+          lastOperationWasEqual = true; 
+          return;
+        } else if (value === "0") {
+          let num = parseFloat(currentInput);
+          currentInput = Number(num).toExponential().toString
+        }
+        let num = parseFloat(currentInput);
+        currentInput = Number(num).toExponential().toString();
         updateScreen(currentInput);
       } else if (value === "−") {
         currentInput += "-";
@@ -610,16 +663,19 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
         let num = parseFloat(currentInput);
-        currentInput = num.toExponential();
+        if (isExponentialMode) {
+          currentInput = num.toString();
+        } else {
+          currentInput = num.toExponential();
+        }
+        isExponentialMode = !isExponentialMode;
         updateScreen(currentInput);
       } else {
         currentInput += value;
-        lastOperationWasEqual = false;
+        lastOperationWasEqual = true; 
         updateScreen(currentInput);
       }
     });
   });
 
-  // Clear history on double click
-  historyDisplay.addEventListener("dblclick", clearHistory);
 });

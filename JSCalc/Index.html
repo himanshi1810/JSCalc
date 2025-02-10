@@ -12,18 +12,19 @@
 </head>
 <body>
     <!-- Main Container -->
-    <div class="calculator container-fluid d-flex gap-5" style="">
+    <div class="calculator container-fluid d-flex gap-5" >
+        <!-- Calculator Container -->
         <div class="" style=" width: 60%;">
                 <h3 >Scientific Calculator</h3>
                 <div id="screen" class="screen">0</div>
 
-                <!-- First Button Group -->
+                <!--Deg F-E Group -->
                 <div class="btn-group">
-                    <button id="btn-deg" class="btn fbtn" style="color: black; font-weight: bold;">Deg</button>
-                    <button id="btn-fe" class="btn fbtn" style="color: black; font-weight: bold;">F-E</button>
+                    <button id="btn-deg" class="btn fbtn" >Deg</button>
+                    <button id="btn-fe" class="btn fbtn" >F-E</button>
                 </div>
                 
-                <!-- Second Button Group -->
+                <!-- Memory Button Group -->
                 <div class="btn-group">
                     <button id="btn-mc" class="btn" style="color: rgb(199, 206, 212); font-weight: bold;">MC</button>
                     <button id="btn-mr" class="btn" style="color: rgb(199, 206, 212); font-weight: bold;">MR</button>
@@ -34,7 +35,7 @@
                 
                 <!-- DropDown Menu -->
                 <div class="container mb-3 d-flex gap-2">
-                    <!-- First Dropup -->
+                    <!-- Trigonomatry Dropup -->
                     <div class="dropdown">
                         <button id="dropdown-trigonometry" class="btn dropdown-toggle btn-m" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Trigonometry
@@ -55,7 +56,7 @@
                         </ul>
                     </div>            
             
-                    <!-- Second Dropdown -->
+                    <!-- Function Dropdown -->
                     <div class="dropdown">
                         <button id="dropdown-functions" class="btn btn-m dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Functions
@@ -107,9 +108,9 @@
                     <button id="btn-0" class="btn btn-num" style="border: 1px solid rgb(206, 200, 200);">0</button>
                     <button id="btn-dot" class="btn btn-num" style="border: 1px solid rgb(206, 200, 200);">.</button>
                     <button id="btn-equal" class="btn btn-primary">=</button>
-                </div>
-                
+                </div>     
         </div>
+        <!-- History - Memory Container -->
         <div class="d-flex gap-5 history-container">
             <div id="history">History</div>
             <div id="memory">Memory</div>

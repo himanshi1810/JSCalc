@@ -23,6 +23,11 @@ h2 {
     margin-bottom: 15px;
 }
 
+.f-btn {
+    color: black; 
+    font-weight: bold;
+}
+
 input, select, button {
     width: 100%;
     padding: 10px;
