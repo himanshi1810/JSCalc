@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
   const themeToggleBtn = document.createElement("button");
-  let lastOperationWasEqual = false;
   themeToggleBtn.textContent = "Toggle Theme";
   themeToggleBtn.classList.add("theme-toggle");
+  const menuIcon = document.querySelector(".menu-icon");
+  const navLinks = document.querySelector(".nav-links");
   document.body.appendChild(themeToggleBtn);
+  let lastOperationWasEqual = false;
   let firstNumber = null;
   let operator = null;
   let isDegreeMode = true;
@@ -13,8 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentInput = "";
   let history = [];
   let memory = 0;
-  const menuIcon = document.querySelector(".menu-icon");
-  const navLinks = document.querySelector(".nav-links");
   let isInverse = false;
   let isHyperbolic = false;
   let isSecondFunction = false;
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Load saved theme from localStorage
+// Theme
   if (localStorage.getItem("theme") === "dark") {
     themeToggleBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i>`;
     document.body.classList.add("dark-theme");
