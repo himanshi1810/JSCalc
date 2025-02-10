@@ -1,12 +1,5 @@
-//+/- not work properly
-//Deg - Rad 
-//F-E Shotout
-//yrootx
-//logyx not working
-//. problem
-//000 problem
-//then 3+6 = 12 if I do 3 + then should give me 15 not error
-//fix the issue 3 + 6 = 12 then 12 + then should append other value not should go to new calculation part
+//FIXME: +/- not work properly
+//FIXME: Deg - Rad 
 
 document.addEventListener("DOMContentLoaded", function () {
   const themeToggleBtn = document.createElement("button");
@@ -17,6 +10,9 @@ document.addEventListener("DOMContentLoaded", function () {
   let lastResult = "";
   let isNewCalculation = false;
   let isDegree = true;
+  let firstNumber = null;
+  let operator = null;
+
 
   //Key Event Handle
   document.addEventListener("keydown", function (event) {
@@ -333,6 +329,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       if (value === "Deg" || value === "Rad") {
         updateScreen("0");
+      } else if (value === "0") {
+        updateScreen("0")
+      } else if (value === ".") {
+        // Prevent multiple decimals in the same number
+        let lastNumber = currentInput.split(/[\+\-\*\/]/).pop();
+        if (!lastNumber.includes(".")) {
+          currentInput += value;
+          updateScreen(currentInput);
+        }
       } else if (value === "C") {
         currentInput = "";
         updateScreen();
@@ -341,22 +346,61 @@ document.addEventListener("DOMContentLoaded", function () {
         updateScreen(currentInput);
       } else if (value === "=") {
         try {
-          const result = eval(currentInput);
-          addToHistory(`${currentInput} = ${result}`);
+          let result;
+          let historyEntry = ""; // Initialize empty history entry
+
+          if (operator === "x^y") {
+            if (currentInput === "" || isNaN(currentInput)) {
+              updateScreen("Error");
+              lastOperationWasEqual = false;
+              return;
+            }
+            let secondNumber = parseFloat(currentInput);
+            result = Math.pow(firstNumber, secondNumber);
+            historyEntry = `${firstNumber} ^ ${secondNumber} = ${result}`;
+          } else if (operator === "y√x") {
+            if (currentInput === "" || isNaN(currentInput) || firstNumber < 0) {
+              updateScreen("Error");
+              lastOperationWasEqual = false;
+              return;
+            }
+            let secondNumber = parseFloat(currentInput);
+            result = Math.pow(firstNumber, 1 / secondNumber);
+            historyEntry = `${secondNumber}√${firstNumber} = ${result}`;
+          } else if (operator === "logᵧx") {
+            if (currentInput === "" || isNaN(currentInput) || firstNumber <= 0) {
+              updateScreen("Error");
+              return;
+            }
+            let base = parseFloat(currentInput);
+            if (base <= 0 || base === 1) {
+              updateScreen("Error"); 
+              return;
+            }
+            result = Math.log(firstNumber) / Math.log(base);
+            historyEntry = `log_${base}(${firstNumber}) = ${result}`;
+          } else {
+            result = eval(currentInput);
+            historyEntry = `${currentInput} = ${result}`;
+          }
+
+          addToHistory(historyEntry);
           currentInput = result.toString();
           updateScreen(currentInput);
           lastOperationWasEqual = true;
+
+          // Reset stored operator & first number
+          operator = null;
+          firstNumber = null;
         } catch (error) {
           updateScreen("Error");
           lastOperationWasEqual = false;
         }
       } else if (!isNaN(value)) {
         if (lastOperationWasEqual) {
-          // If last operation was "=", reset currentInput with the new number
           currentInput = value;
           lastOperationWasEqual = false;
         } else {
-          // Otherwise, append the number normally
           currentInput += value;
         }
         updateScreen(currentInput);
@@ -382,19 +426,19 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (value === "2nd") {
         isSecondFunction = !isSecondFunction;
         if (isSecondFunction) {
-          document.getElementById("btn-square").innerHTML = "x³"; // Change x² → x³
-          document.getElementById("btn-sqrt").innerHTML = "∛x"; // Change √x → ³√x
-          document.getElementById("btn-power").innerHTML = "y√x"; // Change x^y → y√x
-          document.getElementById("btn-10x").innerHTML = "2^x"; // Change 10^x → 2^x
-          document.getElementById("btn-log").innerHTML = "logyx"; // Change log → log base y x
-          document.getElementById("btn-ln").innerHTML = "e^x"; // Change ln → e^x
+          document.getElementById("btn-square").innerHTML = "x³";
+          document.getElementById("btn-sqrt").innerHTML = "∛x";
+          document.getElementById("btn-power").innerHTML = "y√x";
+          document.getElementById("btn-10x").innerHTML = "2^x";
+          document.getElementById("btn-log").innerHTML = "logᵧx";
+          document.getElementById("btn-ln").innerHTML = "e^x";
         } else {
-          document.getElementById("btn-square").innerHTML = "x²"; // Revert x³ → x²
-          document.getElementById("btn-sqrt").innerHTML = "√x"; // Revert ∛x → √x
-          document.getElementById("btn-power").innerHTML = "x<sup>y</sup>"; // Revert y√x → x^y
-          document.getElementById("btn-10x").innerHTML = "10^x"; // Revert 2^x → 10^x
-          document.getElementById("btn-log").innerHTML = "log"; // Revert log base y x → log
-          document.getElementById("btn-ln").innerHTML = "ln"; // Revert e^x → ln
+          document.getElementById("btn-square").innerHTML = "x²";
+          document.getElementById("btn-sqrt").innerHTML = "√x";
+          document.getElementById("btn-power").innerHTML = "x^y";
+          document.getElementById("btn-10x").innerHTML = "10^x";
+          document.getElementById("btn-log").innerHTML = "log";
+          document.getElementById("btn-ln").innerHTML = "ln";
         }
       } else if (value === "x²" || value === "x³") {
         if (currentInput === "" || isNaN(currentInput)) {
@@ -414,61 +458,19 @@ document.addEventListener("DOMContentLoaded", function () {
         updateScreen(currentInput);
 
         console.log("Updated Current Input:", currentInput);
-      } else if (value === "√x" || value === "∛x") {
-        if (currentInput === "" || isNaN(currentInput)) {
-          updateScreen("Error");
-          return;
-        }
-        let num = parseFloat(currentInput);
-        console.log(num);
-        if (isSecondFunction) {
-          num = Math.cbrt(num);
-        } else {
-          num = Math.sqrt(num);
-        }
-        currentInput = num.toString();
-        updateScreen(currentInput);
-        //FixMe
       } else if (value === "x^y" || value === "y√x") {
         if (currentInput === "" || isNaN(currentInput)) {
           updateScreen("Error");
           return;
         }
 
-        if (!currentInput.includes("^") && !currentInput.includes("√")) {
-          // Append operator based on function toggle
-          if (isSecondFunction) {
-            currentInput += "√"; // Append root symbol for y√x
-          } else {
-            currentInput += "^"; // Append exponentiation symbol for x^y
-          }
-          updateScreen(currentInput);
-        } else {
-          let parts;
-          if (isSecondFunction) {
-            // Handle y√x (Root Calculation)
-            parts = currentInput.split("√");
-            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
-              updateScreen("Error");
-              return;
-            }
-            let root = parseFloat(parts[1]); // y in y√x
-            let number = parseFloat(parts[0]); // x in y√x
-            currentInput = Math.pow(number, 1 / root).toString(); // Compute y√x
-          } else {
-            // Handle x^y (Exponentiation)
-            parts = currentInput.split("^");
-            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
-              updateScreen("Error");
-              return;
-            }
-            let base = parseFloat(parts[0]); // x in x^y
-            let exponent = parseFloat(parts[1]); // y in x^y
-            currentInput = Math.pow(base, exponent).toString(); // Compute x^y correctly
-          }
-          updateScreen(currentInput);
-        }
-      } else if (value === "10^x" || value === "2^x") {
+        firstNumber = parseFloat(currentInput);
+        currentInput = "";
+        operator = value;
+        updateScreen(firstNumber + (value === "x^y" ? "^" : "√"));
+
+      }
+      else if (value === "10^x" || value === "2^x") {
         if (currentInput === "" || isNaN(currentInput)) {
           updateScreen("Error");
           return;
@@ -478,13 +480,13 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(num);
 
         if (isSecondFunction) {
-          currentInput = Math.pow(2, num); 
+          currentInput = Math.pow(2, num);
         } else {
           currentInput = Math.pow(10, num);
         }
 
-        updateScreen(currentInput); 
-      } else if (value === "log" || value === "logyx") {
+        updateScreen(currentInput);
+      } else if (value === "log" || value === "logᵧx") {
         if (!isSecondFunction) {
           if (currentInput === "" || isNaN(currentInput)) {
             updateScreen("Error");
@@ -492,25 +494,15 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           let num = parseFloat(currentInput);
           if (num <= 0) {
-            updateScreen("Error"); // Log is undefined for <= 0
+            updateScreen("Error");
             return;
           }
           currentInput = Math.log10(num).toString(); // Log base 10
         } else {
-          let parts = currentInput.split(",");
-          if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
-            updateScreen("Error");
-            return;
-          }
-          let num = parseFloat(parts[0]);
-          let base = parseFloat(parts[1]);
-
-          if (num <= 0 || base <= 0 || base === 1) {
-            updateScreen("Error"); // Log base must be > 0 and ≠ 1
-            return;
-          }
-
-          currentInput = (Math.log(num) / Math.log(base)).toString(); // Log base y calculation
+          firstNumber = parseFloat(currentInput);
+          currentInput = "";
+          operator = "logᵧx";
+          updateScreen(`logᵧ(${firstNumber})`);
         }
         updateScreen(currentInput);
       } else if (value === "ln" || value === "e^x") {
@@ -555,7 +547,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (num === 0) {
             updateScreen("Error");
           } else {
-            currentInput = 1 / num; 
+            currentInput = 1 / num;
             console.log(currentInput);
             updateScreen(currentInput);
           }
