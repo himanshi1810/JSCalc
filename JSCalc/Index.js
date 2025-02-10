@@ -2,6 +2,11 @@
 //Deg - Rad 
 //F-E Shotout
 //yrootx
+//logyx not working
+//. problem
+//000 problem
+//then 3+6 = 12 if I do 3 + then should give me 15 not error
+//fix the issue 3 + 6 = 12 then 12 + then should append other value not should go to new calculation part
 
 document.addEventListener("DOMContentLoaded", function () {
   const themeToggleBtn = document.createElement("button");
@@ -17,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("keydown", function (event) {
     const key = event.key;
 
-    // Allow numbers, decimal point, and basic operators
     if (
       (key >= "0" && key <= "9") ||
       key === "." ||
