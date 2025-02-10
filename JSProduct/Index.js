@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ProductName = document.getElementById("ProductName").value.trim();
     const Price = parseFloat(document.getElementById("Price").value.trim());
     const Description = document.getElementById("Description").value.trim();
-    const ImageInput = document.getElementById("Image").files[0]; // Get selected file
+    const ImageInput = document.getElementById("Image").files[0]; 
 
     if (!ProductName || isNaN(Price) || !Description) {
       alert("All fields are required, and price must be a number");
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (ImageInput) {
       const reader = new FileReader();
       reader.onload = function (event) {
-        const ImageBase64 = event.target.result; // Convert to Base64
+        const ImageBase64 = event.target.result; 
 
         if (editingIndex !== null) {
           products[editingIndex] = { ...products[editingIndex], ProductName, Image: ImageBase64, Price, Description };

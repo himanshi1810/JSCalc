@@ -218,13 +218,12 @@ body.dark-theme .nav-links a {
 
 /* Add styles for icons */
 .icon {
-    font-size: 24px; /* Adjust icon size */
-    cursor: pointer; /* Pointer cursor for icons */
+    font-size: 24px;
+    cursor: pointer; 
 }
 
-/* Show icons for history and memory */
 @media (max-width: 600px) {
     #history-icon, #memory-icon {
-        display: block; /* Show icons */
+        display: block; 
     }
 }

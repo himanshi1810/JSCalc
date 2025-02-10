@@ -1,4 +1,7 @@
 //+/- not work properly
+//Deg - Rad 
+//F-E Shotout
+//yrootx
 
 document.addEventListener("DOMContentLoaded", function () {
   const themeToggleBtn = document.createElement("button");
@@ -91,14 +94,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Update the screen display
   function updateScreen(value) {
-    console.log("Updating Screen:", value); // Debugging log
-    screen.textContent = value || "0"; // Ensure correct element ID
+    console.log("Updating Screen:", value);
+    screen.textContent = value || "0";
   }
 
   document.getElementById("btn-deg").addEventListener("click", function () {
     this.innerText = this.innerText === "Deg" ? "Rad" : "Deg";
   });
-  // Add to history
+
   function addToHistory(entry) {
     history.push(entry);
     updateHistoryDisplay();
@@ -106,14 +109,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Update history display
   function updateHistoryDisplay() {
-    // Clear the current history display
     historyDisplay.innerHTML = "";
 
-    // Create a new div for each entry in the history
     history.forEach((entry) => {
       const entryDiv = document.createElement("div");
-      entryDiv.textContent = entry; // Set the text content to the entry
-      historyDisplay.appendChild(entryDiv); // Append the new div to the history display
+      entryDiv.textContent = entry;
+      historyDisplay.appendChild(entryDiv);
     });
   }
 
@@ -205,43 +206,43 @@ document.addEventListener("DOMContentLoaded", function () {
           ? "sinh⁻¹"
           : "sinh"
         : isInverse
-        ? "sin⁻¹"
-        : "sin",
+          ? "sin⁻¹"
+          : "sin",
       "trig-cos": isHyperbolic
         ? isInverse
           ? "cosh⁻¹"
           : "cosh"
         : isInverse
-        ? "cos⁻¹"
-        : "cos",
+          ? "cos⁻¹"
+          : "cos",
       "trig-tan": isHyperbolic
         ? isInverse
           ? "tanh⁻¹"
           : "tanh"
         : isInverse
-        ? "tan⁻¹"
-        : "tan",
+          ? "tan⁻¹"
+          : "tan",
       "trig-sec": isHyperbolic
         ? isInverse
           ? "sech⁻¹"
           : "sech"
         : isInverse
-        ? "sec⁻¹"
-        : "sec",
+          ? "sec⁻¹"
+          : "sec",
       "trig-csc": isHyperbolic
         ? isInverse
           ? "csch⁻¹"
           : "csch"
         : isInverse
-        ? "csc⁻¹"
-        : "csc",
+          ? "csc⁻¹"
+          : "csc",
       "trig-cot": isHyperbolic
         ? isInverse
           ? "coth⁻¹"
           : "coth"
         : isInverse
-        ? "cot⁻¹"
-        : "cot",
+          ? "cot⁻¹"
+          : "cot",
     };
 
     Object.entries(mappings).forEach(([id, label]) => {
@@ -257,38 +258,38 @@ document.addEventListener("DOMContentLoaded", function () {
         return isInverse
           ? Math.asin(value) * (180 / Math.PI)
           : isHyperbolic
-          ? Math.sinh(value)
-          : Math.sin(radianValue);
+            ? Math.sinh(value)
+            : Math.sin(radianValue);
       case "cos":
         return isInverse
           ? Math.acos(value) * (180 / Math.PI)
           : isHyperbolic
-          ? Math.cosh(value)
-          : Math.cos(radianValue);
+            ? Math.cosh(value)
+            : Math.cos(radianValue);
       case "tan":
         return isInverse
           ? Math.atan(value) * (180 / Math.PI)
           : isHyperbolic
-          ? Math.tanh(value)
-          : Math.tan(radianValue);
+            ? Math.tanh(value)
+            : Math.tan(radianValue);
       case "sec":
         return isInverse
           ? (1 / Math.acos(value)) * (180 / Math.PI)
           : isHyperbolic
-          ? 1 / Math.cosh(value)
-          : 1 / Math.cos(radianValue);
+            ? 1 / Math.cosh(value)
+            : 1 / Math.cos(radianValue);
       case "csc":
         return isInverse
           ? (1 / Math.asin(value)) * (180 / Math.PI)
           : isHyperbolic
-          ? 1 / Math.sinh(value)
-          : 1 / Math.sin(radianValue);
+            ? 1 / Math.sinh(value)
+            : 1 / Math.sin(radianValue);
       case "cot":
         return isInverse
           ? (1 / Math.atan(value)) * (180 / Math.PI)
           : isHyperbolic
-          ? 1 / Math.tanh(value)
-          : 1 / Math.tan(radianValue);
+            ? 1 / Math.tanh(value)
+            : 1 / Math.tan(radianValue);
       default:
         return value;
     }
@@ -300,28 +301,13 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".dropdown-item").forEach((item) => {
     item.addEventListener("click", function () {
       let value = this.innerText;
-
-      if (value === "log") {
-        currentInput = Math.log10(parseFloat(currentInput)).toString();
-      } else if (value === "ln") {
-        currentInput = Math.log(parseFloat(currentInput)).toString();
-      } else if (value === "exp") {
-        currentInput = Math.exp(parseFloat(currentInput)).toString();
-      } else if (value === "mod") {
-        currentInput += "%"; // Assuming mod is used as a remainder operator
-      } else if (value === "1/x") {
-        currentInput = (1 / parseFloat(currentInput)).toString();
-      } else if (value === "|x|") {
+      if (value === "|x|") {
         currentInput = Math.abs(parseFloat(currentInput)).toString();
-      } else if (value === "n!") {
-        let num = parseInt(currentInput);
-        let fact = 1;
-        for (let i = 1; i <= num; i++) {
-          fact *= i;
-        }
-        currentInput = fact.toString();
       } else if (value === "⌊x⌋") {
         currentInput = Math.floor(parseFloat(currentInput)).toString();
+      }
+      else if (value === "⌈x⌉") {
+        currentInput = Math.ceil(parseFloat(currentInput)).toString();
       }
 
       updateScreen(currentInput);
@@ -347,7 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
         currentInput = "";
         updateScreen();
       } else if (value === "DEL") {
-        currentInput = currentInput.slice(0, -1); // Remove last character
+        currentInput = currentInput.slice(0, -1);
         updateScreen(currentInput);
       } else if (value === "=") {
         try {
@@ -355,19 +341,22 @@ document.addEventListener("DOMContentLoaded", function () {
           addToHistory(`${currentInput} = ${result}`);
           currentInput = result.toString();
           updateScreen(currentInput);
-          lastOperationWasEqual = true; // Set a flag to track "=" was pressed
+          lastOperationWasEqual = true;
         } catch (error) {
           updateScreen("Error");
           lastOperationWasEqual = false;
         }
-      }
-      // If a number (0-9) is pressed after "=", clear the screen before appending
-      else if (!isNaN(value) && lastOperationWasEqual) {
-        currentInput = value; // Clear and start fresh with the new number
-        lastOperationWasEqual = false; // Reset the flag
+      } else if (!isNaN(value)) {
+        if (lastOperationWasEqual) {
+          // If last operation was "=", reset currentInput with the new number
+          currentInput = value;
+          lastOperationWasEqual = false;
+        } else {
+          // Otherwise, append the number normally
+          currentInput += value;
+        }
         updateScreen(currentInput);
       }
-      // If a number (0-9) is pressed after "=", clear the screen before appending
       else if (value === "M+") {
         memoryAdd();
       } else if (value === "M-") {
@@ -485,12 +474,12 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(num);
 
         if (isSecondFunction) {
-          currentInput = Math.pow(2, num); // 2^x when toggled
+          currentInput = Math.pow(2, num); 
         } else {
-          currentInput = Math.pow(10, num); // 10^x otherwise
+          currentInput = Math.pow(10, num);
         }
 
-        updateScreen(currentInput); // Update the display with new value
+        updateScreen(currentInput); 
       } else if (value === "log" || value === "logyx") {
         if (!isSecondFunction) {
           if (currentInput === "" || isNaN(currentInput)) {
@@ -562,9 +551,9 @@ document.addEventListener("DOMContentLoaded", function () {
           if (num === 0) {
             updateScreen("Error");
           } else {
-            currentInput = 1 / num; // Convert result to string
+            currentInput = 1 / num; 
             console.log(currentInput);
-            updateScreen(currentInput); // This should now update properly
+            updateScreen(currentInput);
           }
         } catch (error) {
           updateScreen("Error");
@@ -625,10 +614,11 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
         let num = parseFloat(currentInput);
-        currentInput = num.toExponential(); // Convert to exponential notation
+        currentInput = num.toExponential();
         updateScreen(currentInput);
       } else {
         currentInput += value;
+        lastOperationWasEqual = false;
         updateScreen(currentInput);
       }
     });
