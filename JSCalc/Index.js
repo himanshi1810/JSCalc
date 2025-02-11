@@ -14,19 +14,15 @@ document.addEventListener("DOMContentLoaded", function () {
   let isHyperbolic = false;
   let isSecondFunction = false;
   let isExponentialMode = false;
-
-
-   // Theme
+  // Theme
   const themeToggleBtn = createThemeToggleButton();
   document.body.appendChild(themeToggleBtn);
   setupMenuToggle();
-
   //Degree Button
   document.getElementById("btn-deg").addEventListener("click", function () {
     isDegreeMode = !isDegreeMode;
     this.innerText = isDegreeMode ? "Deg" : "Rad";
   });
-
   //Key Event Handle
   document.addEventListener("keydown", function (event) {
     const key = event.key;
@@ -63,8 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
       updateScreen("0");
     }
   });
-
- 
   // Update the screen display
   function updateScreen(value) {
     console.log("Updating Screen:", value);
@@ -85,19 +79,16 @@ document.addEventListener("DOMContentLoaded", function () {
       historyDisplay.appendChild(entryDiv);
     });
   }
-
   // Clear history
   function clearHistory() {
     history = [];
     updateHistoryDisplay();
   }
-
   // Memory functions
   function memoryClear() {
     memory = 0;
     updateMemoryDisplay();
   }
-
   function memoryRecall() {
     currentInput = memory.toString();
     updateScreen(currentInput);
@@ -165,50 +156,49 @@ document.addEventListener("DOMContentLoaded", function () {
           ? "sinh⁻¹"
           : "sinh"
         : isInverse
-        ? "sin⁻¹"
-        : "sin",
+          ? "sin⁻¹"
+          : "sin",
       "trig-cos": isHyperbolic
         ? isInverse
           ? "cosh⁻¹"
           : "cosh"
         : isInverse
-        ? "cos⁻¹"
-        : "cos",
+          ? "cos⁻¹"
+          : "cos",
       "trig-tan": isHyperbolic
         ? isInverse
           ? "tanh⁻¹"
           : "tanh"
         : isInverse
-        ? "tan⁻¹"
-        : "tan",
+          ? "tan⁻¹"
+          : "tan",
       "trig-sec": isHyperbolic
         ? isInverse
           ? "sech⁻¹"
           : "sech"
         : isInverse
-        ? "sec⁻¹"
-        : "sec",
+          ? "sec⁻¹"
+          : "sec",
       "trig-csc": isHyperbolic
         ? isInverse
           ? "csch⁻¹"
           : "csch"
         : isInverse
-        ? "csc⁻¹"
-        : "csc",
+          ? "csc⁻¹"
+          : "csc",
       "trig-cot": isHyperbolic
         ? isInverse
           ? "coth⁻¹"
           : "coth"
         : isInverse
-        ? "cot⁻¹"
-        : "cot",
+          ? "cot⁻¹"
+          : "cot",
     };
 
     Object.entries(mappings).forEach(([id, label]) => {
       document.getElementById(id).textContent = label;
     });
   }
-
   //Trigo Functions
   function applyTrigFunction(func, value) {
     let angle = isDegreeMode ? value * (Math.PI / 180) : value;
@@ -220,67 +210,87 @@ document.addEventListener("DOMContentLoaded", function () {
             ? Math.asin(value) * (180 / Math.PI)
             : Math.asin(value)
           : isHyperbolic
-          ? Math.sinh(value)
-          : Math.sin(angle);
+            ? Math.sinh(value)
+            : Math.sin(angle);
       case "cos":
         return isInverse
           ? isDegreeMode
             ? Math.acos(value) * (180 / Math.PI)
             : Math.acos(value)
           : isHyperbolic
-          ? Math.cosh(value)
-          : Math.cos(angle);
+            ? Math.cosh(value)
+            : Math.cos(angle);
       case "tan":
         return isInverse
           ? isDegreeMode
             ? Math.atan(value) * (180 / Math.PI)
             : Math.atan(value)
           : isHyperbolic
-          ? Math.tanh(value)
-          : Math.tan(angle);
+            ? Math.tanh(value)
+            : Math.tan(angle);
       case "sec":
         return isInverse
           ? isDegreeMode
             ? Math.acos(1 / value) * (180 / Math.PI)
             : Math.acos(1 / value)
           : isHyperbolic
-          ? 1 / Math.cosh(value)
-          : 1 / Math.cos(isDegreeMode ? value * (Math.PI / 180) : value);
+            ? 1 / Math.cosh(value)
+            : 1 / Math.cos(isDegreeMode ? value * (Math.PI / 180) : value);
       case "csc":
         return isInverse
           ? isDegreeMode
             ? Math.asin(1 / value) * (180 / Math.PI)
             : Math.asin(1 / value)
           : isHyperbolic
-          ? 1 / Math.sinh(value)
-          : 1 / Math.sin(isDegreeMode ? value * (Math.PI / 180) : value);
+            ? 1 / Math.sinh(value)
+            : 1 / Math.sin(isDegreeMode ? value * (Math.PI / 180) : value);
       case "cot":
         return isInverse
           ? isDegreeMode
             ? Math.atan(1 / value) * (180 / Math.PI)
             : Math.atan(1 / value)
           : isHyperbolic
-          ? 1 / Math.tanh(value)
-          : 1 / Math.tan(isDegreeMode ? value * (Math.PI / 180) : value);
+            ? 1 / Math.tanh(value)
+            : 1 / Math.tan(isDegreeMode ? value * (Math.PI / 180) : value);
       default:
         return value;
     }
   }
+  //All functions are here like x, |x| using class
+  class DropdownFunctions {
+    constructor() {
+      this.currentInput = "";
+      this.lastOperationWasEqual = false;
+      this.initializeDropdownListeners();
+    }
 
-  //All functions are here like x, |x|
-  document.querySelectorAll(".dropdown-item").forEach((item) => {
-    item.addEventListener("click", function () {
-      let value = this.innerText;
+    initializeDropdownListeners() {
+      document.querySelectorAll(".dropdown-item").forEach((item) => {
+        item.addEventListener("click", () => this.handleDropdownClick(item.innerText));
+      });
+    }
+
+    handleDropdownClick(value) {
       if (value === "|x|") {
-        currentInput = Math.abs(parseFloat(currentInput)).toString();
+        this.currentInput = Math.abs(parseFloat(this.currentInput)).toString();
+        console.log(this.currentInput);
       } else if (value === "⌊x⌋") {
-        currentInput = Math.floor(parseFloat(currentInput)).toString();
+        this.currentInput = Math.floor(parseFloat(this.currentInput)).toString();
+        console.log(this.currentInput);
       } else if (value === "⌈x⌉") {
-        currentInput = Math.ceil(parseFloat(currentInput)).toString();
+        this.currentInput = Math.ceil(parseFloat(this.currentInput)).toString();
       }
-      lastOperationWasEqual = true;
-      updateScreen(currentInput);
-    });
+
+      this.lastOperationWasEqual = true;
+      this.updateScreen(this.currentInput);
+    }
+
+    updateScreen(value) {
+      document.getElementById("screen").textContent = value;
+    }
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    new DropdownFunctions();
   });
 
   // Handle button clicks
@@ -383,14 +393,19 @@ document.addEventListener("DOMContentLoaded", function () {
         updateScreen(currentInput);
       } else if (value === "M+") {
         memoryAdd();
+        lastOperationWasEqual = true;
       } else if (value === "M-") {
         memorySubtract();
+        lastOperationWasEqual = true;
       } else if (value === "MC") {
         memoryClear();
+        lastOperationWasEqual = true;
       } else if (value === "MR") {
         memoryRecall();
+        lastOperationWasEqual = true;
       } else if (value === "MS") {
         memoryStore();
+        lastOperationWasEqual = true;
       } else if (value === "n!") {
         if (currentInput === "" || isNaN(currentInput)) {
           updateScreen("Error"); // Invalid input
